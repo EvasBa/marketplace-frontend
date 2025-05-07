@@ -1,10 +1,16 @@
+'use client'
+
 import { ReactNode } from 'react'
+import { useSession, signOut } from "next-auth/react"
+import Link from 'next/link'
 
 interface LayoutProps {
   children: ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const { data: session } = useSession()
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-blue-600 text-white">
@@ -14,6 +20,16 @@ export default function Layout({ children }: LayoutProps) {
             <div className="space-x-4">
               <a href="/" className="hover:text-blue-200">Home</a>
               <a href="/products" className="hover:text-blue-200">Products</a>
+              {session ? (
+                <>
+                  <span>Welcome, {session.user.email}</span>
+                  <button onClick={() => signOut()} className="hover:text-blue-200">
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <a href="/auth/signin" className="hover:text-blue-200">Sign In</a>
+              )}
             </div>
           </div>
         </nav>
